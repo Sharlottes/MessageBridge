@@ -1,6 +1,6 @@
 import Message from "@remote-kakao/core/dist/message";
 import { manager } from "./CommandManager";
-import { globalPrefix } from "./Vars";
+import kakao from "@KakaoBridge/kakao.json";
 
 /**
   기본 명령어 클래스
@@ -14,11 +14,11 @@ export class Command {
   id: number;
   prefix: string[];
 
-  constructor(trigger: (msg: Message)=>boolean, listener: (msg: Message)=>void, prefix = globalPrefix) {
+  constructor(trigger: (msg: Message)=>boolean, listener: (msg: Message)=>void, prefix = kakao.globalPrefix||'!') {
     this.trigger = trigger;
     this.listener = listener;
     this.id = manager.commands.length;
-    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : [globalPrefix];
+    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : [kakao.globalPrefix||'!'];
   }
 
   public run(msg: Message): void {

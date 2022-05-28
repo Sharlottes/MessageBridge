@@ -1,5 +1,5 @@
 /node_modules
 /scripts
-/window_connect.bat
 src/kakao.json
 src/discord.json
+/window_connect.bat

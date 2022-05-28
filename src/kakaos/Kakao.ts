@@ -1,39 +1,20 @@
 import { Server, Message } from '@remote-kakao/core';
-import { BaseCommand, linkChannel, onKaKaoMessage } from '@RTTRPG/kakaos';
-import { manager } from '@RTTRPG/kakaos/CommandManager';
-import secret from "../kakao.json";
+import { BaseCommand, linkChannel, dislinkChannel, onKaKaoMessage, manager } from '@KakaoBridge/kakaos';
+import secret from '@KakaoBridge/kakao.json';
+import config from '@KakaoBridge/discord.json';
 
 
-function errorHandle(reply: Promise<Record<string, unknown>>) {
-    reply.catch(e => {
-        if(!e) console.log(e);
-    });
-}
-
-function executeEval(msg: Message, args: string[] = ['']) {
-    try {
-        errorHandle(msg.replyText(eval(args[0])));
-    } catch (e) {
-        errorHandle(msg.replyText(e+''));
-    } 
-}
-
-function linkChatting(msg: Message, args?: string[]) {
-    msg.replyText('연결 대기중...').catch(e => console.log(e));
-    console.log('safe');
-    if(args) linkChannel(args[0], args[1], msg.room);
-}
 
 namespace Kakao {
     export const commands: Map<string, (message: Message, args: string[]) => void> = new Map();
 
     export function init() {
-        console.log("initing remote-kakao");
+        console.log("initing kakao bridge");
 
 
         manager.commands = [
-            new BaseCommand(['do', 'eval'], executeEval).addPrefix(""),
-            new BaseCommand("link", linkChatting)
+            new BaseCommand("link", (msg, args) => linkChannel(msg, args[0], args[1])),
+            new BaseCommand("dislink", (msg, args) => dislinkChannel(msg, args[0], args[1]))
         ]
 
 
@@ -44,13 +25,12 @@ namespace Kakao {
 
                 onKaKaoMessage(message);
                 
-                console.log(`[${message.room}] ${message.sender.name}: ${message.content}`);
-                if (message.content == '!test') message.replyText('샤를바보').catch(e => console.log(e));
+                if(config.debug) console.log(`[${message.room}] ${message.sender.name}: ${message.content}`);
             } catch(e) {
                 console.log(e);
             }
         });
-        return server.start(4000, secret.kakao); 
+        return server.start(secret.port||4000, secret.kakaolink);
     }
 }
 

@@ -4,20 +4,12 @@
   "main": "index.ts",
   "scripts": {
     "r": "ts-node-dev --transpile-only -r tsconfig-paths/register src/index.ts",
-    "watchMode": "tsc -w",
-    "compile": "scripts\\compile.bat",
-    "lint": "eslint ."
+    "watchMode": "tsc -w"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.10.0",
-    "@discordjs/rest": "^0.2.0-canary.0",
     "@remote-kakao/core": "^1.0.0-alpha.6",
     "discord-api-types": "^0.26.0",
-    "discord.js": "^13.6.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "glob": "^7.2.0",
-    "request": "^2.88.2",
-    "socket.io": "^4.4.1"
+    "discord.js": "^13.6.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
@@ -25,14 +17,6 @@
     "@types/request": "^2.48.7",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.2.0",
     "nodemon": "^2.0.15",
     "pkg": "^4.4.9",
     "prettier": "2.5.1",
@@ -43,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sharlottes/nodejsbot.git"
+    "url": "git+https://github.com/Sharlottes/kakaobridge.git"
   },
   "keywords": [
     "discord"
@@ -54,9 +38,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Sharlottes/nodejsbot/issues"
+    "url": "https://github.com/Sharlottes/kakaobridge/issues"
   },
-  "homepage": "https://github.com/Sharlottes/nodejsbot#readme",
+  "homepage": "https://github.com/Sharlottes/kakaobridge#readme",
   "description": "",
   "nodemonConfig": {
     "ignore": [],

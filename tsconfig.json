@@ -41,10 +41,10 @@
             "*": [
                 "src/types/*"
             ],
-            "@RTTRPG/*" : [
+            "@KakaoBridge/*" : [
                 "./src/*"
             ],
-            "@RTTRPG/assets/*" : [
+            "@KakaoBridge/assets/*" : [
                 "./assets/*"
             ],
             "external/*": [

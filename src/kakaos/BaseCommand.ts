@@ -12,15 +12,15 @@ export class BaseCommand extends Command {
   names: string[];
   options: Option[];
   saperator: string;
-  listener: (msg: Message, args?: string[])=>void;
+  _listener: (msg: Message, args: string[])=>void;
 
-  constructor(names: string | string[], listener: (msg: Message, args?: string[])=>void, options: (Option | Option[]) = [], saperator = ' ') {
-    super(()=>true, msg=>listener(msg));
+  constructor(names: string | string[], listener: (msg: Message, args: string[])=>void, options: (Option | Option[]) = [], saperator = ' ') {
+    super(()=>true, msg=>listener(msg, []));
 
     this.names = Array.isArray(names) ? names : [names];
     this.options = Array.isArray(options) ? options : [options];
     this.saperator = saperator;
-    this.listener = listener;
+    this._listener = listener;
     
     //옵션 유효성 검사
     let optional = false;
@@ -56,7 +56,7 @@ export class BaseCommand extends Command {
     if(this.isValid(msg)) {
       const spliten = msg.content.split(/\s/);
       const args = spliten.slice(1).join(" ").split(this.saperator);
-      this.listener(msg, args);
+      this._listener(msg, args);
     }
   }
 }
