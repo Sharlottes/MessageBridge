@@ -41,8 +41,8 @@
 ```json
 {
   "nodejs": {
-    "address": 연결할 디스코드 서버 IP,
-    "port": 연결할 디스코드 서버 포트
+    "address": "연결할 디스코드 서버 IP",
+    "port": 4000
   }
 }
 ```
