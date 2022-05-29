@@ -4,13 +4,15 @@ import app from "..";
 
 const chats: ChatLink[] = [];
 
-
 export function linkChannel(msg: Message, guildID: string, channelID: string) {
   msg.replyText('연결 대기중...').catch(console.log);
   const channel = app.client.guilds.cache.get(guildID)?.channels.cache.get(channelID);
   if(channel instanceof TextChannel) {
     chats.push(new ChatLink(msg.room, channel));
     msg.replyText(`연결 완료\n${msg.room} <------> ${channel.name}`).catch(console.log);
+
+    const exist = chats.find(chat=>chat.kakao==msg.room&&chat.discord.id==channelID);
+    if(exist) return msg.replyText(`이미 연결된 상태입니다.`);
 
     const kakaolinks = chats.filter(chat=>chat.kakao==msg.room);
     if(kakaolinks.length > 1) {
