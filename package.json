@@ -7,6 +7,8 @@
     "watchMode": "tsc -w"
   },
   "dependencies": {
+    "@discordjs/builders": "^0.10.0",
+    "@discordjs/rest": "^0.2.0-canary.0",
     "@remote-kakao/core": "^1.0.0-alpha.6",
     "discord-api-types": "^0.26.0",
     "discord.js": "^13.6.0"

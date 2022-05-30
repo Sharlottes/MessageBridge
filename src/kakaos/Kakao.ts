@@ -1,5 +1,5 @@
 import { Server, Message } from '@remote-kakao/core';
-import { BaseCommand, linkChannel, dislinkChannel, onKaKaoMessage, manager } from '@KakaoBridge/kakaos';
+import { BaseCommand, KakaoCommands, manager, onKaKaoMessage } from '@KakaoBridge/kakaos';
 import secret from '@KakaoBridge/kakao.json';
 import config from '@KakaoBridge/discord.json';
 
@@ -12,21 +12,18 @@ namespace Kakao {
         console.log("initing kakao bridge");
 
         manager.commands = [
-            new BaseCommand("link", (msg, args) => linkChannel(msg, args[0], args[1])),
-            new BaseCommand("dislink", (msg, args) => dislinkChannel(msg, args[0], args[1]))
+            new BaseCommand("link", (msg, args) => KakaoCommands.linkChannel(msg, args[0], args[1])),
+            new BaseCommand("dislink", (msg, args) => KakaoCommands.dislinkChannel(msg, args[0], args[1])),
+            new BaseCommand("list", (msg, args) => KakaoCommands.linkList(msg))
         ]
 
         const server = new Server({ useKakaoLink: false });
         server.on('message', async (message) => {
-            try{
-                manager.commands.forEach(cmd => cmd.run(message)); 
+            manager.commands.forEach(cmd => cmd.run(message)); 
 
-                onKaKaoMessage(message);
-                
-                if(config.debug) console.log(`[${message.room}] ${message.sender.name}: ${message.content}`);
-            } catch(e) {
-                console.log(e);
-            }
+            onKaKaoMessage(message);
+            
+            if(config.debug) console.log(`[${message.room}] ${message.sender.name}: ${message.content}`);
         });
         return server.start(secret.port||4000, secret.kakaolink);
     }
