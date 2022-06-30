@@ -9,28 +9,28 @@ import kakao from "@KakaoBridge/kakao.json";
   * @param {Array<string>} [prefix=['!']] 임의 접두사
 */
 export class Command {
-  trigger: (msg: Message)=>boolean;
-  listener: (msg: Message)=>void;
+  trigger: (msg: Message) => boolean;
+  listener: (msg: Message) => void;
   id: number;
   prefix: string[];
 
-  constructor(trigger: (msg: Message)=>boolean, listener: (msg: Message)=>void, prefix = kakao.globalPrefix||'!') {
+  constructor(trigger: (msg: Message) => boolean, listener: (msg: Message) => void, prefix = kakao.globalPrefix || '!') {
     this.trigger = trigger;
     this.listener = listener;
     this.id = manager.commands.length;
-    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : [kakao.globalPrefix||'!'];
+    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : [kakao.globalPrefix || '!'];
   }
 
   public run(msg: Message): void {
-    if(this.isValid(msg)) this.listener(msg);
+    if (this.isValid(msg)) this.listener(msg);
   }
 
   public isValid(msg: Message): boolean {
-    return this.prefix.some(p=>msg.content.startsWith(p))&&this.trigger(msg);
+    return this.prefix.some(p => msg.content.startsWith(p)) && this.trigger(msg);
   }
 
   public addPrefix(prefix: string): this {
     this.prefix.push(prefix);
     return this;
-  } 
+  }
 }

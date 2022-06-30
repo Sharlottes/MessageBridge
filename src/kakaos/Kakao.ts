@@ -14,18 +14,19 @@ namespace Kakao {
         manager.commands = [
             new BaseCommand("link", (msg, args) => KakaoCommands.linkChannel(msg, args[0], args[1])),
             new BaseCommand("dislink", (msg, args) => KakaoCommands.dislinkChannel(msg, args[0], args[1])),
-            new BaseCommand("list", (msg, args) => KakaoCommands.linkList(msg))
+            new BaseCommand("list", (msg, args) => KakaoCommands.linkList(msg)),
+            new BaseCommand("sessions", (msg, args) => KakaoCommands.sessionList(msg))
         ]
 
         const server = new Server({ useKakaoLink: false });
         server.on('message', async (message) => {
-            manager.commands.forEach(cmd => cmd.run(message)); 
+            manager.commands.forEach(cmd => cmd.run(message));
 
             onKaKaoMessage(message);
-            
-            if(config.debug) console.log(`[${message.room}] ${message.sender.name}: ${message.content}`);
+
+            if (config.debug) console.log(`[${message.room}] ${message.sender.name}: ${message.content}`);
         });
-        return server.start(secret.port||4000, secret.kakaolink);
+        return server.start(secret.port || 4000, secret.kakaolink);
     }
 }
 
