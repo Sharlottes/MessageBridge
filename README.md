@@ -35,7 +35,7 @@
 
 ```
 2. 카카오톡 수신 기기 설정 (**안드로이드만 가능**)
-+ 채팅 자동응답 봇 설치
++ 채팅 자동응답 봇 설치 https://github.com/DarkTornado/KakaoTalkBot/releases
 
 + `sdcard/ChatBot/database/` 디렉토리에 `secret.json` 생성 후 아래와 같이 입력
 ```json
@@ -110,6 +110,7 @@ bot.addListener(Event.START_COMPILE, ()=>thread.interrupt());
 yarn
 npm run r
 ```
+원하는 서버에서 `!refresh` 입력. 이후 명령어 사용
 
 ### Connect from Kakao
 해당 방에서 `!link <guild id> <channel id>` 명령어 입력
