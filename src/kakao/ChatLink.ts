@@ -1,6 +1,15 @@
 import Message from "@remote-kakao/core/dist/message";
-import Discord, { MessageEmbed, TextChannel, MessageActionRow, MessageButton, CommandInteraction } from "discord.js";
-import app from "..";
+import Discord, {
+  TextChannel, 
+  ButtonBuilder, 
+  CommandInteraction, 
+  ComponentType, 
+  ButtonStyle, 
+  ActionRowBuilder,
+  EmbedBuilder
+} from "discord.js";
+
+import { Discord as DiscordBot } from "@KakaoBridge/discord";
 
 const chats: ChatLink[] = [];
 const globalSession: Map<string, Message> = new Map();
@@ -8,32 +17,32 @@ const waitingfor: Map<string, Function> = new Map();
 
 export namespace KakaoCommands {
   export function sessionList(msg: Message) {
-    msg.replyText(`세션 목록\n${Array.from(app.client.guilds.cache.values()).map(guild => `• ${guild.name} (${guild.id})\n    ${Array.from(guild.channels.cache.values()).reduce<string[]>((a, e) => e.isText() ? [...a, `- ${e.name} (${e.id})`] : a, []).join("\n    ")}`).join('\n\n------------\n\n')}`).catch(console.log);;
+    msg.reply(`세션 목록\n${Array.from(DiscordBot.client.guilds.cache.values()).map(guild => `• ${guild.name} (${guild.id})\n    ${Array.from(guild.channels.cache.values()).reduce<string[]>((a, e) => e.isTextBased() ? [...a, `- ${e.name} (${e.id})`] : a, []).join("\n    ")}`).join('\n\n------------\n\n')}`).catch(console.log);;
   }
 
   export function linkList(msg: Message) {
     const links = chats.filter(chat => chat.kakao == msg.room);
-    if (links.length == 0) return msg.replyText(`연결이 없습니다.`).catch(console.log);
-    msg.replyText("연결 목록\n" + links.map(chat => `${chat.kakao} <------> ${chat.discord.name}\n    (${chat.discord.guild.id} - ${chat.discord.id})`).join('\n')).catch(console.log);
+    if (links.length == 0) return msg.reply(`연결이 없습니다.`).catch(console.log);
+    msg.reply("연결 목록\n" + links.map(chat => `${chat.kakao} <------> ${chat.discord.name}\n    (${chat.discord.guild.id} - ${chat.discord.id})`).join('\n')).catch(console.log);
   }
 
   export function linkChannel(msg: Message, guildID: string, channelID: string) {
-    const channel = app.client.guilds.cache.get(guildID)?.channels.cache.get(channelID);
-    if (!channel) return msg.replyText('에러: 해당 채널을 찾을 수 없습니다.').catch(console.log);
+    const channel = DiscordBot.client.guilds.cache.get(guildID)?.channels.cache.get(channelID);
+    if (!channel) return msg.reply('에러: 해당 채널을 찾을 수 없습니다.').catch(console.log);
 
     if (channel instanceof TextChannel) {
       const exist = chats.find(chat => chat.kakao == msg.room && chat.discord.id == channelID);
-      if (exist) return msg.replyText(`에러: ${channel.name}은(는) 이미 연결된 상태입니다.`).catch(console.log);
-      msg.replyText(`연결 대기중...`).catch(console.log);
+      if (exist) return msg.reply(`에러: ${channel.name}은(는) 이미 연결된 상태입니다.`).catch(console.log);
+      msg.reply(`연결 대기중...`).catch(console.log);
       channel.send({
         content: `[I]\`${msg.sender.name}\`(이)가 \`${msg.room}\`에서 연결을 요청합니다.`,
         components: [
-          new MessageActionRow()
-            .addComponents(new MessageButton({ label: '승인', style: 'SUCCESS', customId: 'accept' }))
-            .addComponents(new MessageButton({ label: '거절', style: 'SECONDARY', customId: 'decline' }))
+          new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(new ButtonBuilder({ label: '승인', style: ButtonStyle.Success, customId: 'accept' }))
+            .addComponents(new ButtonBuilder({ label: '거절', style: ButtonStyle.Secondary, customId: 'decline' }))
         ]
       }).then(message => {
-        message.awaitMessageComponent({ componentType: 'BUTTON', time: 30000 })
+        message.awaitMessageComponent({ componentType: ComponentType.Button, time: 30000 })
           .then(interaction => {
             switch (interaction.customId) {
               case 'accept': {
@@ -42,32 +51,32 @@ export namespace KakaoCommands {
                 updateState();
                 chat.send(`연결 완료: ${interaction.user.username}(이)가 요청을 승인했습니다.\n${msg.room} <------> ${channel.name}`);
                 const kakaolinks = chats.filter(chat => chat.kakao == msg.room);
-                if (kakaolinks.length > 1) msg.replyText(`경고: ${msg.room}에서 다수의 연결 감지\n${kakaolinks.map(chat => `${chat.kakao} <-----> ${chat.discord.name}`).join('\n')}`).catch(console.log);
+                if (kakaolinks.length > 1) msg.reply(`경고: ${msg.room}에서 다수의 연결 감지\n${kakaolinks.map(chat => `${chat.kakao} <-----> ${chat.discord.name}`).join('\n')}`).catch(console.log);
                 const discordlinks = chats.filter(chat => chat.discord.id == channelID);
                 if (discordlinks.length > 1) channel.send(`경고: \`${channel.name}\`에서 다수의 연결 감지\n${discordlinks.map(chat => `${chat.kakao} <-----> ${chat.discord.name}`).join('\n')}`).catch(console.log);
                 break;
               }
               case 'decline': {
-                msg.replyText(`연결 실패: ${interaction.user.username}(이)가 요청을 거절했습니다.`).catch(console.log);
+                msg.reply(`연결 실패: ${interaction.user.username}(이)가 요청을 거절했습니다.`).catch(console.log);
               }
             }
             message.delete().catch(console.log);
           })
           .catch(err => {
-            msg.replyText(`타임아웃! ${channel.name}에서 응답이 없습니다.`).catch(console.log);
+            msg.reply(`타임아웃! ${channel.name}에서 응답이 없습니다.`).catch(console.log);
             message.delete().catch(console.log);
           });
       });
     }
-    else msg.replyText(`에러: 유효하지 않은 채널 - ${channel.type.toString()}`).catch(console.log);
+    else msg.reply(`에러: 유효하지 않은 채널 - ${channel.type.toString()}`).catch(console.log);
   }
 
   export function dislinkChannel(msg: Message, guildID: string, channelID: string) {
-    const channel = app.client.guilds.cache.get(guildID)?.channels.cache.get(channelID);
-    if (!channel) return msg.replyText('에러: 해당 채널을 찾을 수 없습니다.').catch(console.log);
-    if (!(channel instanceof TextChannel)) return msg.replyText(`에러: 유효하지 않은 채널 - ${channel.type.toString()}`).catch(console.log);
+    const channel = DiscordBot.client.guilds.cache.get(guildID)?.channels.cache.get(channelID);
+    if (!channel) return msg.reply('에러: 해당 채널을 찾을 수 없습니다.').catch(console.log);
+    if (!(channel instanceof TextChannel)) return msg.reply(`에러: 유효하지 않은 채널 - ${channel.type.toString()}`).catch(console.log);
     const index = chats.findIndex(link => link.discord.id == channel.id);
-    if (index == -1) return msg.replyText(`에러: ${channel.name}은(는) 연결되지 않았습니다.`).catch(console.log);
+    if (index == -1) return msg.reply(`에러: ${channel.name}은(는) 연결되지 않았습니다.`).catch(console.log);
 
     const chat = chats.splice(index, 1).pop();
     updateState();
@@ -91,13 +100,13 @@ export namespace DiscordCommands {
   export function linkChannel(interaction: CommandInteraction) {
     if (!interaction.channel || !(interaction.channel instanceof TextChannel)) return;
 
-    const room = interaction.options.getString('room', true);
+    const room = interaction.options.get('room', true).value as string;
     const msg = globalSession.get(room);
     if (!msg) {
       interaction.editReply(`에러: ${room}의 세션이 만료되었거나 없습니다.`);
     } else {
       interaction.editReply("연결 대기중...");
-      msg.replyText(`[I] ${interaction.channel.name}에서 연결을 요청합니다.`).catch(console.log);
+      msg.reply(`[I] ${interaction.channel.name}에서 연결을 요청합니다.`).catch(console.log);
 
       waitingfor.set(room, (message: Message) => {
         if (!interaction.channel || !(interaction.channel instanceof TextChannel)) return;
@@ -108,14 +117,14 @@ export namespace DiscordCommands {
             updateState();
             chat.send(`연결 완료: ${message.sender.name}(이)가 요청을 승인했습니다.\n${message.room} <------> ${interaction.channel.name}`);
             const kakaolinks = chats.filter(chat => chat.kakao == message.room);
-            if (kakaolinks.length > 1) message.replyText(`경고: ${msg.room}에서 다수의 연결 감지\n${kakaolinks.map(chat => `${chat.kakao} <-----> ${chat.discord.name}`).join('\n')}`).catch(console.log);
+            if (kakaolinks.length > 1) message.reply(`경고: ${msg.room}에서 다수의 연결 감지\n${kakaolinks.map(chat => `${chat.kakao} <-----> ${chat.discord.name}`).join('\n')}`).catch(console.log);
             const discordlinks = chats.filter(chat => chat.discord.id == interaction.channelId);
             if (discordlinks.length > 1) interaction.channel.send(`경고: \`${interaction.channel.name}\`에서 다수의 연결 감지\n${discordlinks.map(chat => `${chat.kakao} <-----> ${chat.discord.name}`).join('\n')}`).catch(console.log);
             break;
           }
           case 'no': {
             interaction.channel.send(`연결 실패: ${message.sender.name}(이)가 요청을 거절했습니다.`);
-            message.replyText(`연결 실패: ${message.sender.name}(이)가 요청을 거절했습니다.`).catch(console.log);
+            message.reply(`연결 실패: ${message.sender.name}(이)가 요청을 거절했습니다.`).catch(console.log);
           }
         }
       });
@@ -123,7 +132,7 @@ export namespace DiscordCommands {
   }
 
   export function dislinkChannel(interaction: CommandInteraction) {
-    const room = interaction.options.getString('room', true);
+    const room = interaction.options.get('room', true).value as string;
     const index = chats.findIndex(link => link.kakao == room);
     if (index == -1) {
       interaction.followUp(`에러: ${room}은(는) 연결되지 않았습니다.`);
@@ -182,7 +191,7 @@ class ChatLink {
   isOneKakao = true;
   isOneDiscord = true;
   kakao: string;
-  latestKakaoSession?: Message;
+  latestkakaoession?: Message;
   discord: TextChannel;
 
   constructor(kakao: string, discord: TextChannel) {
@@ -191,35 +200,35 @@ class ChatLink {
   }
 
   public sendToKakao(message: Discord.Message) {
-    if (!this.latestKakaoSession) {
+    if (!this.latestkakaoession) {
       const session = globalSession.get(this.kakao);
       if (session) {
-        this.latestKakaoSession = session;
+        this.latestkakaoession = session;
         this.sendToKakao(message);
       }
       else message.channel.send(`수신 에러: \`${this.kakao}\`의 세션이 만료되어 메시지 수신이 실패했습니다.`);
     }
-    else this.latestKakaoSession.replyText(`${this.isOneKakao ? '' : `[${this.discord.name}] `}${message.author.username}: ${message.content}`).catch(console.log);
+    else this.latestkakaoession.reply(`${this.isOneKakao ? '' : `[${this.discord.name}] `}${message.author.username}: ${message.content}`).catch(console.log);
   }
 
   public sendToDiscord(message: Message) {
-    this.latestKakaoSession = message;
+    this.latestkakaoession = message;
     console.log(message.sender.getProfileImage())
-    const embed = new MessageEmbed().setAuthor({ name: message.sender.name, iconURL: message.sender.getProfileImage() }).setTitle(message.room).setDescription(message.content);
+    const embed = new EmbedBuilder().setAuthor({ name: message.sender.name, iconURL: message.sender.getProfileImage() }).setTitle(message.room).setDescription(message.content);
     this.discord.send({ embeds: [embed] });
     //this.discord.send(`${this.isOneDiscord ? '' : `[${message.room}] `}${message.sender.name}: ${message.content}`);
   }
 
   public send(text: string) {
     this.discord.send(text);
-    if (!this.latestKakaoSession) {
+    if (!this.latestkakaoession) {
       const session = globalSession.get(this.kakao);
       if (session) {
-        this.latestKakaoSession = session;
-        session.replyText(text).catch(console.log);
+        this.latestkakaoession = session;
+        session.reply(text).catch(console.log);
       }
       else this.discord.send(`수신 에러: \`${this.kakao}\`의 세션이 만료되어 메시지 수신이 실패했습니다.`);
     }
-    else this.latestKakaoSession.replyText(text).catch(console.log);
+    else this.latestkakaoession.reply(text).catch(console.log);
   }
 }

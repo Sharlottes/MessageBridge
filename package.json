@@ -1,17 +1,14 @@
 {
   "name": "kakaobridge",
-  "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "r": "ts-node-dev --transpile-only -r tsconfig-paths/register src/index.ts",
-    "watchMode": "tsc -w"
+    "r": "ts-node --transpile-only -r tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.10.0",
-    "@discordjs/rest": "^0.2.0-canary.0",
-    "@remote-kakao/core": "^1.0.0-alpha.6",
-    "discord-api-types": "^0.26.0",
-    "discord.js": "^13.6.0"
+    "@remote-kakao/core": "^1.0.7",
+    "@remote-kakao/kakaolink-plugin": "^1.0.8",
+    "discord.js": "^14.5.0",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
@@ -19,11 +16,9 @@
     "@types/request": "^2.48.7",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
-    "nodemon": "^2.0.15",
-    "pkg": "^4.4.9",
+    "discord-api-types": "^0.37.0",
     "prettier": "2.5.1",
     "ts-node": "^10.4.0",
-    "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.12.0",
     "typescript": "^4.5.4"
   },
@@ -31,21 +26,9 @@
     "type": "git",
     "url": "git+https://github.com/Sharlottes/kakaobridge.git"
   },
-  "keywords": [
-    "discord"
-  ],
   "author": "Sharlotte",
   "contributors": [
     "AmateurPotion"
   ],
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Sharlottes/kakaobridge/issues"
-  },
-  "homepage": "https://github.com/Sharlottes/kakaobridge#readme",
-  "description": "",
-  "nodemonConfig": {
-    "ignore": [],
-    "delay": 2500
-  }
+  "license": "MIT"
 }

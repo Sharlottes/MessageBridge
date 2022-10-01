@@ -1,6 +1,5 @@
 import Message from "@remote-kakao/core/dist/message";
-import { manager } from "./CommandManager";
-import kakao from "@KakaoBridge/kakao.json";
+import { Kakao } from "..";
 
 /**
   기본 명령어 클래스
@@ -14,11 +13,11 @@ export class Command {
   id: number;
   prefix: string[];
 
-  constructor(trigger: (msg: Message) => boolean, listener: (msg: Message) => void, prefix = kakao.globalPrefix || '!') {
+  constructor(trigger: (msg: Message) => boolean, listener: (msg: Message) => void, prefix = '!') {
     this.trigger = trigger;
     this.listener = listener;
-    this.id = manager.commands.length;
-    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : [kakao.globalPrefix || '!'];
+    this.id = Kakao.commands.length;
+    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : ['!'];
   }
 
   public run(msg: Message): void {

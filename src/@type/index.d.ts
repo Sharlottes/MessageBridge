@@ -1,13 +1,15 @@
-
-export type CommandCategory = "guild" | "global"
-
-export type CommandInfo = {
-    id: string
-    application_id: string
-    version: string
-    default_permissions: null
-    type: number
-    name: string
-    description: string
-    guild_id: string
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      PORT: number,
+      DEBUG: boolean, 
+      DISCORD_TOKEN: string,
+      KAKAOLINK_EMAIL: string,
+      KAKAOLINK_PASSWORD: string,
+      KAKAOLINK_DOMAIN: string,
+      KAKAOLINK_JAVASCRIPT_KEY: string
+    }
+  }
 }
+
+export {}

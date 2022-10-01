@@ -44,8 +44,8 @@ export class BaseCommand extends Command {
         }
 
         //유효하지 않은 서식은 도움말 답변
-        if (this.options.length) msg.replyText(this.prefix.join(",") + this.names.join("|") + " " + this.options.map(opt => (opt.optional ? "[" : "(") + opt.name + ":" + opt.type + (opt.optional ? "]" : ")")).join(this.saperator)).catch(console.log);
-        else msg.replyText(this.prefix.join(",") + this.names.join("|")).catch(console.log);
+        if (this.options.length) msg.reply(this.prefix.join(",") + this.names.join("|") + " " + this.options.map(opt => (opt.optional ? "[" : "(") + opt.name + ":" + opt.type + (opt.optional ? "]" : ")")).join(this.saperator)).catch(console.log);
+        else msg.reply(this.prefix.join(",") + this.names.join("|")).catch(console.log);
       }
     }
 
