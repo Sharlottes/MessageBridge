@@ -45,6 +45,28 @@ namespace Discord {
                 await CM.refreshCommand("guild", message.guild);
                 message.reply(`guild command push has been done in ${(Date.now() - time)}ms`);
             }
+
+            if(message.content == "test" && masterIDs.includes(message.author.id)) {
+                ChatLinkManager.chats.forEach(chat => {
+                    if (chat.discord.id !== message.channel.id) return;
+                    const CLOUDINARY_CLIENT_ID = "dvfymmnoq";
+                    const molus = [
+                        ["모?루", `https://res.cloudinary.com/${CLOUDINARY_CLIENT_ID}/image/upload/v1637820695/1637601279492_cugxuz.jpg`],
+                        ["쇼핑몰?루", `https://res.cloudinary.com/${CLOUDINARY_CLIENT_ID}/image/upload/v1637874000/1637873933719_fxvncd.jpg`],
+                        ["뿅!", `https://res.cloudinary.com/${CLOUDINARY_CLIENT_ID}/image/upload/v1637874683/images_1_qzx3hm.jpg`],
+                        ["몰?루없음", `https://res.cloudinary.com/${CLOUDINARY_CLIENT_ID}/image/upload/v1637874661/images_bntlm7.jpg`],
+                        ["모모?코", `https://res.cloudinary.com/${CLOUDINARY_CLIENT_ID}/image/upload/v1637874697/i14615767089_r4plwp.png`]
+                      ];
+                    const molu = molus[+(Math.random() * 4).toFixed()];
+                    chat.sendKakaoLink(message, {
+                        title: "몰?루",
+                        item: molu[0],
+                        cat: "몰루???",
+                        itemImg: molu[1],
+                        image: `https://res.cloudinary.com/${CLOUDINARY_CLIENT_ID}/image/upload/v1637819645/1637601286501_revroy.jpg`,
+                      });
+                });
+            }
         });
         
         await commandInit();
@@ -110,7 +132,7 @@ function linkList(interaction: CommandInteraction) {
         interaction.editReply(`에러: ${room}의 세션이 만료되었거나 없습니다.`);
     } else {
         interaction.editReply("연결 대기중...");
-        msg.reply(`[I] ${interaction.channel.name}에서 연결을 요청합니다.`).catch(console.log);
+        msg.reply(`[I] ${interaction.channel.name}에서 연결을 요청합니다. (yes/no)`).catch(console.log);
 
         ChatLinkManager.waitingfor.set(room, (message: Message) => {
             if (!interaction.channel || !(interaction.channel instanceof TextChannel)) return;
