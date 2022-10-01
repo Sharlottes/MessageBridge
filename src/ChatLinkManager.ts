@@ -1,5 +1,5 @@
 import Message from "@remote-kakao/core/dist/message";
-import Discord, { TextChannel, EmbedBuilder} from "discord.js";
+import Discord, { TextChannel, EmbedBuilder, AttachmentBuilder } from "discord.js";
 
 namespace ChatLinkManager {
     export const chats: ChatLink[] = [];
@@ -48,13 +48,20 @@ export class ChatLink {
 
     public sendToDiscord(message: Message) {
         this.latestkakaoession = message;
-        console.log(message.sender.getProfileImage())
-        this.discord.send({ embeds: [
-            new EmbedBuilder()
-                .setAuthor({ name: message.sender.name, iconURL: message.sender.getProfileImage() })
-                .setTitle(message.room)
-                .setDescription(message.content)
-        ] });
+        console.log(message.sender.getProfileImage());
+        this.discord.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setAuthor({ 
+                        name: message.sender.name, 
+                        iconURL: message.sender.getProfileImage().startsWith("http://") 
+                            ? message.sender.getProfileImage() 
+                            : undefined 
+                    })
+                    .setTitle(message.room)
+                    .setDescription(message.content)
+            ]
+        });
     }
 
     public send(text: string) {

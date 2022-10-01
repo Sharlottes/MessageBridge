@@ -33,61 +33,80 @@ KAKAOLINK_JAVASCRIPT_KEY: 카카오링크 어플리케이션 자바스크립트 
 + [체팅자동응답봇-beta5](https://github.com/DarkTornado/KakaoTalkBot/releases/tag/v5.0_beta_5) 설치
 + 새로운 봇 생성 후 아래 코드 입력, **config의 address에 디스코드 서버 IP 입력해야 함**
 ```js
-//from remote-kakao module example code
+//from remote-kakao module example code, edited by Sharlotte
+
+importPackage(java.io);
+importPackage(java.net);
 
 const bot = BotManager.getCurrentBot();
 const config = {
-    address: "", //Discord Bot Client IP
+    address: "0.0.0.0", //Discord Bot Client IP
     port: 4000
 };
-const socket = new java.net.DatagramSocket();
-const address = java.net.InetAddress.getByName(config.address);
+const socket = new DatagramSocket();
+const address = InetAddress.getByName(config.address);
 const buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 65535);
-const inPacket = new java.net.DatagramPacket(buffer, buffer.length);
+const inPacket = new DatagramPacket(buffer, buffer.length);
 
-const getBytes = function (str) { return new java.lang.String(str).getBytes(); };
-const sendMessage = function (event, data) {
-    const bytes = getBytes(JSON.stringify({ event: event, data: data }));
-    const outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
+const sendPacket = stringfied => {
+    const bytes = new java.lang.String(stringfied).getBytes();
+    const outPacket = new DatagramPacket(bytes, bytes.length, address, config.port);
     socket.send(outPacket);
-};
-const sendReply = function (session, success, data) {
-    const bytes = getBytes(JSON.stringify({ session: session, success: success, data: data }));
-    const outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
-    socket.send(outPacket);
-};
-const handleMessage = function (msg) {
-    let _a;
-    const _b = JSON.parse(decodeURIComponent(msg)), event = _b.event, data = _b.data, session = _b.session;
-    switch (event) {
-        case 'sendText':
-            const res = Api.replyRoom(data.room, ((_a = data.text) !== null && _a !== void 0 ? _a : '').toString());
-            sendReply(session, res);
-            break;
-    }
-};
+}
 
+const uploadImage = function (name, stream) {
+  const con = org.jsoup.Jsoup.connect("https://up-m.talk.kakao.com/upload%22)
+    .header("A", "An/9.0.0/ko")
+    .data("user_id", "-1")
+    .data("attachment_type", "image/jpeg")
+    .data("file", name, stream)
+    .ignoreHttpErrors(true)
+    .method(org.jsoup.Connection.Method.POST)
+    .execute();
+  return con.body();
+}
+const reply = json => {
+  const { event, data: { room, text }, session } = json;
+
+  if(event == "sendText") { 
+    sendPacket(JSON.stringify({ 
+      session: session, 
+      success: Api.replyRoom(room, (text || '').toString()) 
+    }));
+  }
+}
 const thread = new java.lang.Thread({
-    run: function () {
+    run: () => {
         while (true) {
             socket.receive(inPacket);
-            handleMessage(String(new java.lang.String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength())));
+            reply(JSON.parse(decodeURIComponent(String(new java.lang.String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength())))));
         }
     },
 });
 thread.start();
-bot.addListener(Event.MESSAGE, msg=>{
-  android.os.StrictMode.enableDefaults();
-  sendMessage('chat', {
-      room: msg.room,
-      content: msg.content,
-      sender: msg.author.name,
-      isGroupChat: msg.isGroupChat,
-      profileImage: java.lang.String(msg.author.avatar.getBase64()).hashCode(),
-      packageName: msg.packageName,
-  });
+bot.addListener(Event.START_COMPILE, () => thread.interrupt());
+bot.addListener(Event.MESSAGE, msg => {
+    android.os.StrictMode.enableDefaults();
+
+    const bos = new ByteArrayOutputStream();  msg.author.avatar.getBitmap().compress(android.graphics.Bitmap.CompressFormat.PNG, 0, bos); 
+    const url = uploadImage(Date.now().toString()+msg.author.name, new ByteArrayInputStream(bos.toByteArray()));
+
+    try {
+        sendPacket(JSON.stringify({ 
+            event: 'chat', 
+            data: {
+                room: msg.room,
+                content: msg.content,
+                sender: msg.author.name,
+                isGroupChat: msg.isGroupChat,
+                profileImage: http://dn-m.talk.kakao.com/${url},
+                packageName: msg.packageName,
+            }
+        }));
+    } catch(err) {
+        Log.i(err);
+    }
 });
-bot.addListener(Event.START_COMPILE, ()=>thread.interrupt());
 ```
 
 ## Start

@@ -9,7 +9,7 @@ const masterIDs = [
 ];
 
 namespace Discord {
-    export const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+    export const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
     export async function init() {
         console.log("initing discord bot client");
@@ -29,16 +29,14 @@ namespace Discord {
         });
         
         client.on("messageCreate", async message => {
-            console.log(message);
-
             if (message.author.id != client.user?.id && message.channel instanceof TextChannel) {
                 ChatLinkManager.chats.forEach(chat => {
                     if (chat.discord.id !== message.channel.id) return;
                     chat.sendToKakao(message);
                 });
             }
-        
-            if (message.channel.isTextBased() && message.content == "!refresh" && message.guild != null && (message.author.id == message.guild.ownerId || masterIDs.includes(message.author.id))) {
+            
+            if (message.content == "!refresh" && message.inGuild() && (message.author.id == message.guild.ownerId || masterIDs.includes(message.author.id))) {
                 const time = Date.now();
             
                 message.reply(`refresh start! server: ${message.guild.name}`).catch(console.log);
@@ -140,6 +138,7 @@ function linkList(interaction: CommandInteraction) {
 function dislinkChannel(interaction: CommandInteraction) {
     const room = interaction.options.get('room', true).value as string;
     const index = ChatLinkManager.chats.findIndex(link => link.kakao == room);
+    interaction.editReply("연결 해제중...");
     if (index == -1) {
         interaction.followUp(`에러: ${room}은(는) 연결되지 않았습니다.`);
     } else {
