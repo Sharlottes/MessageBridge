@@ -1,6 +1,5 @@
-<center>
-
-# **Kakao Bridge**
+<h1 align="center">Kakao Bridge</h1>
+<div align="center">
 
 [![typescript](https://img.shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=white)](https://www.typescriptlang.org/)
 [![license](https://img.shields.io/badge/license-MIT-critical)](https://github.com/Sharlottes/KakaoBridge/blob/master/LICENSE)
@@ -13,7 +12,7 @@
 [![Discord](https://img.shields.io/badge/Sharlotte%230018-7289DA?logo=discord&logoColor=white&style=flat-square)](https://discordapp.com/users/473072758629203980)
 
 디스코드 채널 <---> 카카오톡 채팅방 쌍방향 문자 통신 카카오톡/디스코드 봇
-</center>
+</div>
 
 
 ## Config
