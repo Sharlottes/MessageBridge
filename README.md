@@ -55,7 +55,7 @@ const sendPacket = stringfied => {
 }
 
 const uploadImage = function (name, stream) {
-  const con = org.jsoup.Jsoup.connect("https://up-m.talk.kakao.com/upload%22)
+  const con = org.jsoup.Jsoup.connect("https://up-m.talk.kakao.com/upload")
     .header("A", "An/9.0.0/ko")
     .data("user_id", "-1")
     .data("attachment_type", "image/jpeg")
@@ -99,7 +99,7 @@ bot.addListener(Event.MESSAGE, msg => {
                 content: msg.content,
                 sender: msg.author.name,
                 isGroupChat: msg.isGroupChat,
-                profileImage: http://dn-m.talk.kakao.com/${url},
+                profileImage: `http://dn-m.talk.kakao.com/${url}`,
                 packageName: msg.packageName,
             }
         }));
