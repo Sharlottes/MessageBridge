@@ -31,60 +31,44 @@ KAKAOLINK_JAVASCRIPT_KEY: 카카오링크 어플리케이션 자바스크립트 
 
 2. 카카오톡 수신 기기 설정 (**안드로이드만 가능**)
 
-+ 플레이스토어에서 메신저봇R 설치
++ [체팅자동응답봇-beta5](https://github.com/DarkTornado/KakaoTalkBot/releases/tag/v5.0_beta_5) 설치
 + 새로운 봇 생성 후 아래 코드 입력, **config의 address에 디스코드 서버 IP 입력해야 함**
 ```js
 //from remote-kakao module example code
-"use strict";
-var config = {
-    address: '127.0.0.1', // 디스코드 서버 IP
-    port: 4000,
+
+const bot = BotManager.getCurrentBot();
+const config = {
+    address: "", //Discord Bot Client IP
+    port: 4000
 };
-var socket = new java.net.DatagramSocket();
-var address = java.net.InetAddress.getByName(config.address);
-var buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 65535);
-var generateId = function (len) {
-    var result = '';
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var _ = 0; _ < len; _++)
-        result += chars[Math.floor(Math.random() * chars.length)];
-    return result;
-};
-var getBytes = function (str) { return new java.lang.String(str).getBytes(); };
-var inPacket = new java.net.DatagramPacket(buffer, buffer.length);
-var sendMessage = function (event, data) {
-    var bytes = getBytes(JSON.stringify({ event: event, data: data }));
-    var outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
+const socket = new java.net.DatagramSocket();
+const address = java.net.InetAddress.getByName(config.address);
+const buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 65535);
+const inPacket = new java.net.DatagramPacket(buffer, buffer.length);
+
+const getBytes = function (str) { return new java.lang.String(str).getBytes(); };
+const sendMessage = function (event, data) {
+    const bytes = getBytes(JSON.stringify({ event: event, data: data }));
+    const outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
     socket.send(outPacket);
 };
-var sendReply = function (session, success, data) {
-    var bytes = getBytes(JSON.stringify({ session: session, success: success, data: data }));
-    var outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
+const sendReply = function (session, success, data) {
+    const bytes = getBytes(JSON.stringify({ session: session, success: success, data: data }));
+    const outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
     socket.send(outPacket);
 };
-var handleMessage = function (msg) {
-    var _a;
-    var _b = JSON.parse(decodeURIComponent(msg)), event = _b.event, data = _b.data, session = _b.session;
+const handleMessage = function (msg) {
+    let _a;
+    const _b = JSON.parse(decodeURIComponent(msg)), event = _b.event, data = _b.data, session = _b.session;
     switch (event) {
         case 'sendText':
-            var res = Api.replyRoom(data.room, ((_a = data.text) !== null && _a !== void 0 ? _a : '').toString());
+            const res = Api.replyRoom(data.room, ((_a = data.text) !== null && _a !== void 0 ? _a : '').toString());
             sendReply(session, res);
             break;
     }
 };
-var send = function (msg) {
-    sendMessage('chat', {
-        room: msg.room,
-        content: msg.msg,
-        sender: msg.sender,
-        isGroupChat: msg.isGroupChat,
-        profileImage: msg.imageDB.getProfileBase64(),
-        packageName: msg.packageName,
-    });
-};
-var response = function (room, msg, sender, isGroupChat, _, imageDB, packageName) { return send({ room: room, msg: msg, sender: sender, isGroupChat: isGroupChat, imageDB: imageDB, packageName: packageName }); };
-// @ts-ignore
-var thread = new java.lang.Thread({
+
+const thread = new java.lang.Thread({
     run: function () {
         while (true) {
             socket.receive(inPacket);
@@ -92,8 +76,19 @@ var thread = new java.lang.Thread({
         }
     },
 });
-var onStartCompile = function () { return thread.interrupt(); };
 thread.start();
+bot.addListener(Event.MESSAGE, msg=>{
+  android.os.StrictMode.enableDefaults();
+  sendMessage('chat', {
+      room: msg.room,
+      content: msg.content,
+      sender: msg.author.name,
+      isGroupChat: msg.isGroupChat,
+      profileImage: java.lang.String(msg.author.avatar.getBase64()).hashCode(),
+      packageName: msg.packageName,
+  });
+});
+bot.addListener(Event.START_COMPILE, ()=>thread.interrupt());
 ```
 
 ## Start
