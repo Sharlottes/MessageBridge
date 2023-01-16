@@ -13,11 +13,15 @@ export class Command {
   id: number;
   prefix: string[];
 
-  constructor(trigger: (msg: Message) => boolean, listener: (msg: Message) => void, prefix = '!') {
+  constructor(
+    trigger: (msg: Message) => boolean,
+    listener: (msg: Message) => void,
+    prefix = "!"
+  ) {
     this.trigger = trigger;
     this.listener = listener;
     this.id = Kakao.commands.length;
-    this.prefix = prefix ? Array.isArray(prefix) ? prefix : [prefix] : ['!'];
+    this.prefix = prefix ? (Array.isArray(prefix) ? prefix : [prefix]) : ["!"];
   }
 
   public run(msg: Message): void {
@@ -25,7 +29,9 @@ export class Command {
   }
 
   public isValid(msg: Message): boolean {
-    return this.prefix.some(p => msg.content.startsWith(p)) && this.trigger(msg);
+    return (
+      this.prefix.some((p) => msg.content.startsWith(p)) && this.trigger(msg)
+    );
   }
 
   public addPrefix(prefix: string): this {

@@ -14,8 +14,16 @@ export class BaseCommand extends Command {
   saperator: string;
   _listener: (msg: Message, args: string[]) => void;
 
-  constructor(names: string | string[], listener: (msg: Message, args: string[]) => void, options: (Option | Option[]) = [], saperator = ' ') {
-    super(() => true, msg => listener(msg, []));
+  constructor(
+    names: string | string[],
+    listener: (msg: Message, args: string[]) => void,
+    options: Option | Option[] = [],
+    saperator = " "
+  ) {
+    super(
+      () => true,
+      (msg) => listener(msg, [])
+    );
 
     this.names = Array.isArray(names) ? names : [names];
     this.options = Array.isArray(options) ? options : [options];
@@ -25,7 +33,10 @@ export class BaseCommand extends Command {
     //옵션 유효성 검사
     let optional = false;
     for (const opt of this.options) {
-      if (optional && !opt.optional) throw new Error("선택 매개변수는 필수 매개변수보다 앞에 있을 수 없습니다.");
+      if (optional && !opt.optional)
+        throw new Error(
+          "선택 매개변수는 필수 매개변수보다 앞에 있을 수 없습니다."
+        );
       optional = opt.optional;
     }
   }
@@ -35,17 +46,40 @@ export class BaseCommand extends Command {
       const spliten = msg.content.split(/\s/);
       const args = spliten.slice(1).join(" ").split(this.saperator);
 
-      if (this.prefix.some(p => this.names.includes(spliten[0].slice(p.length)))) {
+      if (
+        this.prefix.some((p) => this.names.includes(spliten[0].slice(p.length)))
+      ) {
         if (!this.options.length) return true;
 
         for (let i = 0; i < this.options.length; i++) {
           const opt = this.options[i];
-          if (opt.optional || (args[i] && typeof args[i] === opt.type)) return true;
+          if (opt.optional || (args[i] && typeof args[i] === opt.type))
+            return true;
         }
 
         //유효하지 않은 서식은 도움말 답변
-        if (this.options.length) msg.reply(this.prefix.join(",") + this.names.join("|") + " " + this.options.map(opt => (opt.optional ? "[" : "(") + opt.name + ":" + opt.type + (opt.optional ? "]" : ")")).join(this.saperator)).catch(console.log);
-        else msg.reply(this.prefix.join(",") + this.names.join("|")).catch(console.log);
+        if (this.options.length)
+          msg
+            .reply(
+              this.prefix.join(",") +
+                this.names.join("|") +
+                " " +
+                this.options
+                  .map(
+                    (opt) =>
+                      (opt.optional ? "[" : "(") +
+                      opt.name +
+                      ":" +
+                      opt.type +
+                      (opt.optional ? "]" : ")")
+                  )
+                  .join(this.saperator)
+            )
+            .catch(console.log);
+        else
+          msg
+            .reply(this.prefix.join(",") + this.names.join("|"))
+            .catch(console.log);
       }
     }
 

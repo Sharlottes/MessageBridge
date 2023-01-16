@@ -1,32 +1,24 @@
 {
-    "compilerOptions": {
-        "target": "es2017",
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "baseUrl": "./",
-        "paths": {
-            "@KakaoBridge/*" : [
-                "./src/*"
-            ],
-            "@type/*": [
-                "./src/@type/*"
-            ]
-        },
-        "rootDirs": [
-            "./src/"
-        ],
-        "typeRoots": [
-            "./src/@type/"
-        ],
-        "resolveJsonModule": true,   
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "outDir": "./build/",
-        "removeComments": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "skipLibCheck": true
-    }
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "@KakaoBridge/*": ["./src/*"],
+      "@type/*": ["./src/@type/*"]
+    },
+    "rootDirs": ["./src/"],
+    "typeRoots": ["./src/@type/"],
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./build/",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
 }
