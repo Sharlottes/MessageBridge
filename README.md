@@ -32,7 +32,7 @@ KAKAOLINK_JAVASCRIPT_KEY: 카카오링크 어플리케이션 자바스크립트 
 
 2. 카카오톡 수신 기기 설정 (**안드로이드만 가능**)
 
-- [체팅자동응답봇-beta5](https://github.com/DarkTornado/KakaoTalkBot/releases/tag/v5.0_beta_5) 설치
+- [채팅자동응답봇-beta5](https://github.com/DarkTornado/KakaoTalkBot/releases/tag/v5.0_beta_5) 설치
 - 새로운 봇 생성 후 아래 코드 입력, **config의 address에 디스코드 서버 IP 입력해야 함**
 
 ```js
@@ -156,7 +156,7 @@ yarn r
 
 ### Run Kakaotalk Bot
 
-앱을 키고 해당 봇 활성화. 백그라운드에서도 잘 실행하지만 인터넷 및 기기 환경에 따라 송수신이 불안정할 수 있음.
+앱을 켜고 해당 봇 활성화. 백그라운드에서도 잘 실행하지만, 인터넷 및 기기 환경에 따라 송수신이 불안정할 수 있음.
 
 ## Connecting
 
