@@ -1,5 +1,5 @@
 import Message from "@remote-kakao/core/dist/message";
-import { Kakao } from "..";
+import KakaoClient from "..";
 
 /**
   기본 명령어 클래스
@@ -7,7 +7,7 @@ import { Kakao } from "..";
   * @param {(msg: Message)=>void} listener 명령어 리스너
   * @param {Array<string>} [prefix=['!']] 임의 접두사
 */
-export class Command {
+class KakaoCommand {
   trigger: (msg: Message) => boolean;
   listener: (msg: Message) => void;
   id: number;
@@ -20,7 +20,7 @@ export class Command {
   ) {
     this.trigger = trigger;
     this.listener = listener;
-    this.id = Kakao.commands.length;
+    this.id = KakaoClient.commands.length;
     this.prefix = prefix ? (Array.isArray(prefix) ? prefix : [prefix]) : ["!"];
   }
 
@@ -39,3 +39,5 @@ export class Command {
     return this;
   }
 }
+
+export default KakaoCommand;

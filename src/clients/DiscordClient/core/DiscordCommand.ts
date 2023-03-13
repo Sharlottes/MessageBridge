@@ -1,7 +1,7 @@
 import { CommandInteraction, CacheType } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-abstract class Command {
+abstract class DiscordCommand {
   public abstract run(interaction: CommandInteraction<CacheType>): void;
 
   constructor(
@@ -14,4 +14,4 @@ abstract class Command {
   }
 }
 
-export default Command;
+export default DiscordCommand;

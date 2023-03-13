@@ -3,7 +3,7 @@
  * @param name 인자 이름
  * @param type 인자 타입 
 */
-export class Option {
+class KakaoOption {
   constructor(
     public name: string,
     public type: "string" | "float" | "int" = "string",
@@ -16,3 +16,5 @@ export class Option {
     return !arg.replace(/\d|[\d+[.]\d+]/g, "");
   }
 }
+
+export default KakaoOption;

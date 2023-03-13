@@ -1,32 +1,19 @@
-export { default as Command } from "./Command";
-
+import DiscordClient from "..";
 import { Collection, Guild } from "discord.js";
 import { Routes } from "discord-api-types/v10";
+import DiscordCommand from "./DiscordCommand";
 
-import { Command, Discord } from "@KakaoBridge/discord";
-
-type CommandInfo = {
-  id: string;
-  application_id: string;
-  version: string;
-  default_permissions: null;
-  type: number;
-  name: string;
-  description: string;
-  guild_id: string;
-};
-
-namespace CommandManager {
-  export const commands: Collection<string, Command> = new Collection();
+class DiscordCommandManager {
+  public commands: Collection<string, DiscordCommand> = new Collection();
 
   /**
    * 새로운 빗금 명령어를 등록합니다.
    * @param command
    * @returns 명령어 추가여부
    */
-  export async function register(command: Command): Promise<boolean> {
-    if (commands.has(command.builder.name)) return false;
-    commands.set(command.builder.name, command);
+  public async register(command: DiscordCommand): Promise<boolean> {
+    if (this.commands.has(command.builder.name)) return false;
+    this.commands.set(command.builder.name, command);
     if (process.env.DEBUG)
       console.log(
         `[Command] register [ /${command.builder.name} ] to ${command.category} command.`
@@ -34,21 +21,18 @@ namespace CommandManager {
     return true;
   }
 
-  export async function refreshCommand(target: "global"): Promise<void>;
-  export async function refreshCommand(
-    target: "guild",
-    guild: Guild
-  ): Promise<void>;
+  public async refreshCommand(target: "global"): Promise<void>;
+  public async refreshCommand(target: "guild", guild: Guild): Promise<void>;
   /**
    * 빗금 명령어를 새로고침합니다.
    * @param target 명령어 적용 범주, 서버 또는 전역
    * @param guild 적용할 서버
    */
-  export async function refreshCommand(
+  public async refreshCommand(
     target: "global" | "guild",
     guild?: Guild
   ): Promise<void> {
-    const application = Discord.client.application;
+    const application = DiscordClient.client.application;
     if (!(application && guild)) return;
 
     const commandPath =
@@ -58,14 +42,18 @@ namespace CommandManager {
 
     // 명령어 제거
     await Promise.all(
-      ((await Discord.client.rest.get(commandPath)) as CommandInfo[]).map(
-        (command) => Discord.client.rest.delete(`${commandPath}/${command.id}`)
+      (
+        (await DiscordClient.client.rest.get(
+          commandPath
+        )) as DiscordCommandInfo[]
+      ).map((command) =>
+        DiscordClient.client.rest.delete(`${commandPath}/${command.id}`)
       )
     );
 
     // 명령어 재등록
     await Promise.all(
-      commands.reduce(
+      this.commands.reduce(
         (sequence, command) =>
           command.category == target
             ? [
@@ -82,4 +70,4 @@ namespace CommandManager {
   }
 }
 
-export default CommandManager;
+export default new DiscordCommandManager();

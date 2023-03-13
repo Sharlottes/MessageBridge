@@ -1,5 +1,5 @@
 import Message from "@remote-kakao/core/dist/message";
-import { Option, Command } from ".";
+import { KakaoOption, KakaoCommand } from ".";
 
 /**
 더 쉬운 명령어 관리를 위한 기초 명령어 클래스
@@ -8,16 +8,16 @@ import { Option, Command } from ".";
  * @param {Option|Array<Option>} [options] 명령어 인자
  * @param {RegExp|string} [saperator=/\s/] 메시지 구분자
 */
-export class BaseCommand extends Command {
+class KakaoBaseCommand extends KakaoCommand {
   names: string[];
-  options: Option[];
+  options: KakaoOption[];
   saperator: string;
   _listener: (msg: Message, args: string[]) => void;
 
   constructor(
     names: string | string[],
     listener: (msg: Message, args: string[]) => void,
-    options: Option | Option[] = [],
+    options: KakaoOption | KakaoOption[] = [],
     saperator = " "
   ) {
     super(
@@ -90,7 +90,12 @@ export class BaseCommand extends Command {
     if (this.isValid(msg)) {
       const spliten = msg.content.split(/\s/);
       const args = spliten.slice(1).join(" ").split(this.saperator);
-      this._listener(msg, args);
+      try {
+        this._listener(msg, args);
+      } catch (reason: any) {
+        msg.reply(reason).catch(console.log);
+      }
     }
   }
 }
+export default KakaoBaseCommand;

@@ -5,11 +5,9 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "@KakaoBridge/*": ["./src/*"],
-      "@type/*": ["src/@types/*"]
+      "@/*": ["./src/*"]
     },
     "rootDirs": ["./src/"],
-    "typeRoots": ["src/@types"],
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
