@@ -34,20 +34,6 @@ namespace Kakao {
       new BaseCommand("sessions", (msg, args) => sessionList(msg))
     );
 
-    if (
-      process.env.KAKAOLINK_EMAIL &&
-      process.env.KAKAOLINK_PASSWORD &&
-      process.env.KAKAOLINK_JAVASCRIPT_KEY &&
-      process.env.KAKAOLINK_DOMAIN
-    ) {
-      server.usePlugin(KakaoLinkPlugin, {
-        email: process.env.KAKAOLINK_EMAIL,
-        password: process.env.KAKAOLINK_PASSWORD,
-        key: process.env.KAKAOLINK_JAVASCRIPT_KEY,
-        host: process.env.KAKAOLINK_DOMAIN,
-      });
-    }
-
     server.on("message", async (message) => {
       ChatLinkManager.globalSession.set(message.room, message);
 
