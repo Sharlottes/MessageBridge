@@ -6,10 +6,10 @@
     "baseUrl": "./",
     "paths": {
       "@KakaoBridge/*": ["./src/*"],
-      "@type/*": ["./src/@type/*"]
+      "@type/*": ["src/@types/*"]
     },
     "rootDirs": ["./src/"],
-    "typeRoots": ["./src/@type/"],
+    "typeRoots": ["src/@types"],
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
