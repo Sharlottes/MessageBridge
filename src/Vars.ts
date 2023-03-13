@@ -1,4 +1,4 @@
-import Platform from "./platform/Platform";
+import Platform from "./platforms/Platform";
 
 class Vars {
   public platforms: Set<Platform> = new Set();

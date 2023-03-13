@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import CM from "./core/DiscordCommandManager";
 import { linkChannel, dislinkChannel, linkList } from "./commands";
-import DiscordPlatform from "@/platform/DiscordPlatform";
+import DiscordPlatform from "@/platforms/DiscordPlatform";
 import Vars from "@/Vars";
 
 const masterIDs = ["462167403237867520", "473072758629203980"];

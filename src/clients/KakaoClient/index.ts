@@ -2,7 +2,7 @@ import { Server } from "@remote-kakao/core";
 
 import { KakaoBaseCommand, KakaoCommand } from "./core";
 import { linkChannel, dislinkChannel, linkList } from "./commands";
-import KakaoPlatform from "@/platform/KakaoPlatform";
+import KakaoPlatform from "@/platforms/KakaoPlatform";
 import Vars from "@/Vars";
 
 class KakaoClient {
