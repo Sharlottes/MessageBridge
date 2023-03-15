@@ -1,5 +1,5 @@
 {
-  "name": "kakaobridge",
+  "name": "messagebridge",
   "main": "index.ts",
   "scripts": {
     "r": "ts-node-dev --transpile-only -r tsconfig-paths/register src/index.ts"
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sharlottes/kakaobridge.git"
+    "url": "git+https://github.com/Sharlottes/MessageBridge.git"
   },
   "author": "Sharlotte",
   "contributors": [
