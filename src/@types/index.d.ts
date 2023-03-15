@@ -1,11 +1,7 @@
+import { Envs } from "./envs";
+
 declare global {
   namespace NodeJS {
-    interface ProcessEnv {
-      PORT: number;
-      DEBUG: boolean;
-      DISCORD_TOKEN: string;
-    }
+    interface ProcessEnv extends Envs {}
   }
 }
-
-export {};
